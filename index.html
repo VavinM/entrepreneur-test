@@ -149,6 +149,33 @@
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+        .export-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+.export-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.clear-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.admin-controls {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
     </style>
 </head>
 <body>
@@ -166,11 +193,19 @@
         <button class="admin-btn" onclick="showAdminSection()">Раздел для руководителей</button>
         
         <div class="admin-section" id="admin-section">
-            <h3>Доступ к результатам</h3>
-            <input type="password" id="admin-password" placeholder="Введите пароль">
-            <button type="button" onclick="checkAdminPassword()">Показать результаты</button>
-            <div id="results-table"></div>
+    <h3>Доступ к результатам</h3>
+    <input type="password" id="admin-password" placeholder="Введите пароль">
+    <button type="button" onclick="checkAdminPassword()">Показать результаты</button>
+    
+    <div class="admin-controls" id="admin-controls" style="display: none;">
+        <div class="export-buttons">
+            <button class="export-btn" onclick="exportToCSV()">Экспорт в CSV</button>
+            <button class="export-btn" onclick="exportToJSON()">Экспорт в JSON</button>
+            <button class="clear-btn" onclick="clearResults()">Очистить результаты</button>
         </div>
+        <div id="results-table"></div>
+    </div>
+</div>
         
         <form id="entrepreneur-test" style="display: none;">
             <!-- Все вопросы остаются такими же, как в вашем исходном коде -->
@@ -552,12 +587,12 @@
         }
 
         function checkAdminPassword() {
-            const password = document.getElementById('admin-password').value;
-            if (password === ADMIN_PASSWORD) {
-                displayAllResults();
-            } else {
-                alert('Неверный пароль');
-            }
+    const password = document.getElementById('admin-password').value;
+    if (password === ADMIN_PASSWORD) {
+        displayAllResults();
+    } else {
+        alert('Неверный пароль');
+    }
         }
 
         function displayAllResults() {
@@ -773,6 +808,99 @@
             
             return recommendations.join("<br>• ");
         }
+        function displayAllResults() {
+    const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    
+    if (results.length === 0) {
+        document.getElementById('results-table').innerHTML = '<p>Нет сохраненных результатов</p>';
+        return;
+    }
+    
+    let tableHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Дата</th>
+                    <th>ФИО</th>
+                    <th>Телефон</th>
+                    <th>Email</th>
+                    <th>Общий балл</th>
+                    <th>Soft skills</th>
+                    <th>Hard skills</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    results.forEach((result, index) => {
+        tableHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${new Date(result.timestamp).toLocaleString()}</td>
+                <td>${result.user.fullname}</td>
+                <td>${result.user.phone}</td>
+                <td>${result.user.email || '-'}</td>
+                <td>${result.totalScore}</td>
+                <td>${result.softScore}</td>
+                <td>${result.hardScore}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `</tbody></table>`;
+    document.getElementById('results-table').innerHTML = tableHTML;
+    document.getElementById('admin-controls').style.display = 'block';
+}
+
+function exportToCSV() {
+    const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    if (results.length === 0) {
+        alert('Нет данных для экспорта');
+        return;
+    }
+    
+    let csv = '№;Дата;ФИО;Телефон;Email;Общий балл;Soft skills;Hard skills\n';
+    
+    results.forEach((result, index) => {
+        csv += `${index + 1};"${new Date(result.timestamp).toLocaleString()}";"${result.user.fullname}";"${result.user.phone}";"${result.user.email || ''}";${result.totalScore};${result.softScore};${result.hardScore}\n`;
+    });
+    
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `результаты_теста_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function exportToJSON() {
+    const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    if (results.length === 0) {
+        alert('Нет данных для экспорта');
+        return;
+    }
+    
+    const dataStr = JSON.stringify(results, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `результаты_теста_${new Date().toISOString().slice(0,10)}.json`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function clearResults() {
+    if (confirm('Вы уверены, что хотите удалить все результаты? Это действие нельзя отменить.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        document.getElementById('results-table').innerHTML = '<p>Нет сохраненных результатов</p>';
+        document.getElementById('admin-controls').style.display = 'none';
+    }
+}
     </script>
 </body>
 </html>
