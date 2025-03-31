@@ -150,40 +150,39 @@
             background-color: #f9f9f9;
         }
         .export-buttons {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-}
-.export-btn {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.clear-btn {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.admin-controls {
-    margin-top: 20px;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .export-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .clear-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .admin-controls {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
         .email-sending {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #e8f5e9;
-    border-radius: 8px;
-    display: none;
-}
-
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -201,27 +200,24 @@
         <button class="admin-btn" onclick="showAdminSection()">Раздел для руководителей</button>
         
         <div class="admin-section" id="admin-section">
-    <h3>Доступ к результатам</h3>
-    <input type="password" id="admin-password" placeholder="Введите пароль">
-    <button type="button" onclick="checkAdminPassword()">Показать результаты</button>
-    
-    <div class="admin-controls" id="admin-controls" style="display: none;">
-        <div class="export-buttons">
-            <button class="export-btn" onclick="exportToCSV()">Экспорт в CSV</button>
-            <button class="export-btn" onclick="exportToJSON()">Экспорт в JSON</button>
-            <button class="clear-btn" onclick="clearResults()">Очистить результаты</button>
+            <h3>Доступ к результатам</h3>
+            <input type="password" id="admin-password" placeholder="Введите пароль">
+            <button type="button" onclick="checkAdminPassword()">Показать результаты</button>
+            
+            <div class="admin-controls" id="admin-controls" style="display: none;">
+                <div class="export-buttons">
+                    <button class="export-btn" onclick="exportToCSV()">Экспорт в CSV</button>
+                    <button class="export-btn" onclick="exportToJSON()">Экспорт в JSON</button>
+                    <button class="clear-btn" onclick="clearResults()">Очистить результаты</button>
+                </div>
+                <div id="results-table"></div>
+            </div>
         </div>
-        <div id="results-table"></div>
-    </div>
-</div>
         
         <form id="entrepreneur-test" style="display: none;">
-            <!-- Все вопросы остаются такими же, как в вашем исходном коде -->
-            <!-- Для краткости я не повторяю все вопросы, они должны быть скопированы из вашего исходного кода -->
-             <form id="entrepreneur-test">
             <h2 style="color: #4caf50; margin-top: 30px;">Soft-навыки (мягкие компетенции)</h2>
             
-            <!-- Вопрос 1 -->
+            <!-- Вопросы 1-18 -->
             <div class="question">
                 <label>1. Уверены ли Вы в том, что способны вдохновлять команду на совместную работу и принятие общих ценностей?</label>
                 <div class="options">
@@ -232,8 +228,8 @@
                     <label><input type="radio" name="q1" value="5"> Полностью уверен</label>
                 </div>
             </div>
-
-            <!-- Вопрос 2 -->
+            
+           <!-- Вопрос 2 -->
             <div class="question">
                 <label>2. Какой стиль управления вы предпочитаете?</label>
                 <div class="options">
@@ -546,33 +542,27 @@
                     <label><input type="radio" name="q27" value="5"> Профессионально подбираю и внедряю инструменты</label>
                 </div>
             </div>
-
+            
             <button type="button" onclick="calculateScore()">Получить результат</button>
         </form>
 
         <div class="result" id="result"></div>
-    </div>
-
-            <button type="button" onclick="calculateScore()">Получить результат</button>
-        </form>
-
-        <div class="result" id="result"></div>
+        
+        <div class="email-sending" id="email-sending">
+            <h3>Отправка результатов на email</h3>
+            <p id="email-status">Подготовка к отправке...</p>
+        </div>
     </div>
 
     <script>
-        // Сохраняем результаты в localStorage
         const STORAGE_KEY = 'entrepreneur_test_results';
         const ADMIN_PASSWORD = 'twinurfu2025';
         
-        // Веса вопросов
         const weights = {
-            // Soft skills weights (questions 1-18)
             q1: 8, q2: 7, q3: 6, q4: 7, q5: 6,
             q6: 5, q7: 8, q8: 7, q9: 6, q10: 5,
             q11: 6, q12: 5, q13: 7, q14: 6, q15: 5,
             q16: 4, q17: 5, q18: 4,
-            
-            // Hard skills weights (questions 19-27)
             q19: 6, q20: 5, q21: 7, q22: 8, q23: 7,
             q24: 6, q25: 7, q26: 6, q27: 8
         };
@@ -595,54 +585,51 @@
         }
 
         function checkAdminPassword() {
-    const password = document.getElementById('admin-password').value;
-    if (password === ADMIN_PASSWORD) {
-        displayAllResults();
-    } else {
-        alert('Неверный пароль');
-    }
+            const password = document.getElementById('admin-password').value;
+            if (password === ADMIN_PASSWORD) {
+                displayAllResults();
+            } else {
+                alert('Неверный пароль');
+            }
         }
 
-        function displayAllResults() {
-            const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        function sendEmailResults(softScore, hardScore, totalScore) {
+            const emailSection = document.getElementById('email-sending');
+            emailSection.style.display = 'block';
             
-            if (results.length === 0) {
-                document.getElementById('results-table').innerHTML = '<p>Нет сохраненных результатов</p>';
-                return;
+            const fullname = document.getElementById('fullname').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value || 'не указан';
+            
+            const subject = `Результаты теста: ${fullname}`;
+            let body = `Результаты теста предпринимательских компетенций\n\n`;
+            body += `Участник: ${fullname}\n`;
+            body += `Телефон: ${phone}\n`;
+            body += `Email: ${email}\n\n`;
+            body += `Результаты:\n`;
+            body += `- Общий балл: ${totalScore}\n`;
+            body += `- Soft skills: ${softScore}\n`;
+            body += `- Hard skills: ${hardScore}\n\n`;
+            body += `Ответы на вопросы:\n`;
+            
+            for (let i = 1; i <= 27; i++) {
+                const question = `q${i}`;
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected) {
+                    body += `Вопрос ${i}: ${selected.nextSibling.textContent.trim()}\n`;
+                }
             }
             
-            let tableHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Дата</th>
-                            <th>ФИО</th>
-                            <th>Телефон</th>
-                            <th>Email</th>
-                            <th>Общий балл</th>
-                            <th>Soft skills</th>
-                            <th>Hard skills</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+            const mailtoLink = `mailto:vavinnation@vk.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             
-            results.forEach(result => {
-                tableHTML += `
-                    <tr>
-                        <td>${new Date(result.timestamp).toLocaleString()}</td>
-                        <td>${result.user.fullname}</td>
-                        <td>${result.user.phone}</td>
-                        <td>${result.user.email || '-'}</td>
-                        <td>${result.totalScore}</td>
-                        <td>${result.softScore}</td>
-                        <td>${result.hardScore}</td>
-                    </tr>
-                `;
-            });
-            
-            tableHTML += `</tbody></table>`;
-            document.getElementById('results-table').innerHTML = tableHTML;
+            try {
+                document.getElementById('email-status').textContent = 'Открываю почтовый клиент...';
+                window.location.href = mailtoLink;
+                document.getElementById('email-status').textContent = 'Почтовый клиент открыт. Пожалуйста, отправьте письмо.';
+            } catch (e) {
+                document.getElementById('email-status').textContent = 'Ошибка при открытии почтового клиента. Скопируйте результаты ниже и отправьте вручную на vavinnation@vk.com';
+                emailSection.innerHTML += `<textarea style="width:100%; height:200px; margin-top:10px;">${body}</textarea>`;
+            }
         }
 
         function saveResult(softScore, hardScore, totalScore) {
@@ -678,7 +665,6 @@
         }
 
         function calculateScore() {
-            // Проверяем, все ли вопросы отвечены
             let allAnswered = true;
             for (let i = 1; i <= 27; i++) {
                 const question = `q${i}`;
@@ -698,7 +684,6 @@
             let hardScore = 0;
             const form = document.getElementById('entrepreneur-test');
             
-            // Подсчёт баллов для soft skills (вопросы 1-18)
             for(let i = 1; i <= 18; i++) {
                 const question = `q${i}`;
                 const selected = form.querySelector(`input[name="${question}"]:checked`);
@@ -707,7 +692,6 @@
                 }
             }
             
-            // Подсчёт баллов для hard skills (вопросы 19-27)
             for(let i = 19; i <= 27; i++) {
                 const question = `q${i}`;
                 const selected = form.querySelector(`input[name="${question}"]:checked`);
@@ -716,7 +700,6 @@
                 }
             }
 
-            // Расчёт максимальных баллов
             const softMaxScore = Object.entries(weights)
                 .filter(([key]) => parseInt(key.substring(1)) <= 18)
                 .reduce((sum, [_, weight]) => sum + weight * 5, 0);
@@ -725,15 +708,13 @@
                 .filter(([key]) => parseInt(key.substring(1)) >= 19)
                 .reduce((sum, [_, weight]) => sum + weight * 5, 0);
             
-            // Нормализация до 100 баллов
             const finalSoftScore = Math.round((softScore / softMaxScore) * 100);
             const finalHardScore = Math.round((hardScore / hardMaxScore) * 100);
             const totalScore = Math.round((finalSoftScore * 0.6 + finalHardScore * 0.4));
-sendEmailResults(finalSoftScore, finalHardScore, totalScore);
-            // Сохраняем результат
-            saveResult(finalSoftScore, finalHardScore, totalScore);
 
-            // Интерпретация
+            saveResult(finalSoftScore, finalHardScore, totalScore);
+            sendEmailResults(finalSoftScore, finalHardScore, totalScore);
+
             const softText = getSkillInterpretation(finalSoftScore, 'soft');
             const hardText = getSkillInterpretation(finalHardScore, 'hard');
             const totalText = getTotalInterpretation(totalScore);
@@ -743,7 +724,7 @@ sendEmailResults(finalSoftScore, finalHardScore, totalScore);
                 <p>${totalText}</p>
                 
                 <div class="skills-section soft-skills">
-                    <div class="section-title">Soft-навыки (мягкие компетенции): ${finalSoftScore} баллов</div>
+                    <div class="section-title">Soft-навыки: ${finalSoftScore} баллов</div>
                     <div class="progress-container">
                         <div class="progress-bar soft-progress" style="width: ${finalSoftScore}%">${finalSoftScore}%</div>
                     </div>
@@ -751,7 +732,7 @@ sendEmailResults(finalSoftScore, finalHardScore, totalScore);
                 </div>
                 
                 <div class="skills-section hard-skills">
-                    <div class="section-title">Hard-навыки (технические компетенции): ${finalHardScore} баллов</div>
+                    <div class="section-title">Hard-навыки: ${finalHardScore} баллов</div>
                     <div class="progress-container">
                         <div class="progress-bar hard-progress" style="width: ${finalHardScore}%">${finalHardScore}%</div>
                     </div>
@@ -761,6 +742,100 @@ sendEmailResults(finalSoftScore, finalHardScore, totalScore);
                 <h4>Рекомендации по развитию:</h4>
                 <p>${getRecommendations(finalSoftScore, finalHardScore)}</p>
             `;
+        }
+
+        function displayAllResults() {
+            const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            
+            if (results.length === 0) {
+                document.getElementById('results-table').innerHTML = '<p>Нет сохраненных результатов</p>';
+                return;
+            }
+            
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Дата</th>
+                            <th>ФИО</th>
+                            <th>Телефон</th>
+                            <th>Email</th>
+                            <th>Общий балл</th>
+                            <th>Soft skills</th>
+                            <th>Hard skills</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            results.forEach((result, index) => {
+                tableHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${new Date(result.timestamp).toLocaleString()}</td>
+                        <td>${result.user.fullname}</td>
+                        <td>${result.user.phone}</td>
+                        <td>${result.user.email || '-'}</td>
+                        <td>${result.totalScore}</td>
+                        <td>${result.softScore}</td>
+                        <td>${result.hardScore}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `</tbody></table>`;
+            document.getElementById('results-table').innerHTML = tableHTML;
+            document.getElementById('admin-controls').style.display = 'block';
+        }
+
+        function exportToCSV() {
+            const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            if (results.length === 0) {
+                alert('Нет данных для экспорта');
+                return;
+            }
+            
+            let csv = '№;Дата;ФИО;Телефон;Email;Общий балл;Soft skills;Hard skills\n';
+            
+            results.forEach((result, index) => {
+                csv += `${index + 1};"${new Date(result.timestamp).toLocaleString()}";"${result.user.fullname}";"${result.user.phone}";"${result.user.email || ''}";${result.totalScore};${result.softScore};${result.hardScore}\n`;
+            });
+            
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `результаты_теста_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportToJSON() {
+            const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            if (results.length === 0) {
+                alert('Нет данных для экспорта');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(results, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `результаты_теста_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearResults() {
+            if (confirm('Вы уверены, что хотите удалить все результаты? Это действие нельзя отменить.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                document.getElementById('results-table').innerHTML = '<p>Нет сохраненных результатов</p>';
+                document.getElementById('admin-controls').style.display = 'none';
+            }
         }
 
         function getSkillInterpretation(score, type) {
@@ -787,21 +862,18 @@ sendEmailResults(finalSoftScore, finalHardScore, totalScore);
         function getRecommendations(softScore, hardScore) {
             let recommendations = [];
             
-            // Рекомендации по soft skills
             if(softScore < 45) {
                 recommendations.push("Пройти курсы по развитию лидерских качеств и эмоционального интеллекта");
             } else if(softScore < 65) {
                 recommendations.push("Практиковать навыки коммуникации и управления командой");
             }
             
-            // Рекомендации по hard skills
             if(hardScore < 45) {
                 recommendations.push("Освоить базовые цифровые инструменты (таск-менеджеры, мессенджеры, облачные сервисы)");
             } else if(hardScore < 65) {
                 recommendations.push("Изучить продвинутые функции цифровых инструментов и автоматизацию процессов");
             }
             
-            // Общие рекомендации
             if(softScore >= 65 && hardScore >= 65) {
                 recommendations.push("Сфокусироваться на стратегическом развитии бизнеса с использованием ваших сильных сторон");
             } else if(softScore >= 65 && hardScore < 65) {
@@ -816,151 +888,6 @@ sendEmailResults(finalSoftScore, finalHardScore, totalScore);
             
             return recommendations.join("<br>• ");
         }
-        function displayAllResults() {
-    const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    
-    if (results.length === 0) {
-        document.getElementById('results-table').innerHTML = '<p>Нет сохраненных результатов</p>';
-        return;
-    }
-    
-    let tableHTML = `
-        <table>
-            <thead>
-                <tr>
-                    <th>№</th>
-                    <th>Дата</th>
-                    <th>ФИО</th>
-                    <th>Телефон</th>
-                    <th>Email</th>
-                    <th>Общий балл</th>
-                    <th>Soft skills</th>
-                    <th>Hard skills</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
-    
-    results.forEach((result, index) => {
-        tableHTML += `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${new Date(result.timestamp).toLocaleString()}</td>
-                <td>${result.user.fullname}</td>
-                <td>${result.user.phone}</td>
-                <td>${result.user.email || '-'}</td>
-                <td>${result.totalScore}</td>
-                <td>${result.softScore}</td>
-                <td>${result.hardScore}</td>
-            </tr>
-        `;
-    });
-    
-    tableHTML += `</tbody></table>`;
-    document.getElementById('results-table').innerHTML = tableHTML;
-    document.getElementById('admin-controls').style.display = 'block';
-}
-
-function exportToCSV() {
-    const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    if (results.length === 0) {
-        alert('Нет данных для экспорта');
-        return;
-    }
-    
-    let csv = '№;Дата;ФИО;Телефон;Email;Общий балл;Soft skills;Hard skills\n';
-    
-    results.forEach((result, index) => {
-        csv += `${index + 1};"${new Date(result.timestamp).toLocaleString()}";"${result.user.fullname}";"${result.user.phone}";"${result.user.email || ''}";${result.totalScore};${result.softScore};${result.hardScore}\n`;
-    });
-    
-    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `результаты_теста_${new Date().toISOString().slice(0,10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-function exportToJSON() {
-    const results = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    if (results.length === 0) {
-        alert('Нет данных для экспорта');
-        return;
-    }
-    
-    const dataStr = JSON.stringify(results, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `результаты_теста_${new Date().toISOString().slice(0,10)}.json`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-function clearResults() {
-    if (confirm('Вы уверены, что хотите удалить все результаты? Это действие нельзя отменить.')) {
-        localStorage.removeItem(STORAGE_KEY);
-        document.getElementById('results-table').innerHTML = '<p>Нет сохраненных результатов</p>';
-        document.getElementById('admin-controls').style.display = 'none';
-    }
-}
-<div class="email-sending" id="email-sending">
-    <h3>Отправка результатов на email</h3>
-    <p id="email-status">Подготовка к отправке...</p>
-</div>
-        function sendEmailResults(softScore, hardScore, totalScore) {
-    const emailSection = document.getElementById('email-sending');
-    emailSection.style.display = 'block';
-    
-    const fullname = document.getElementById('fullname').value;
-    const phone = document.getElementById('phone').value;
-    const email = document.getElementById('email').value || 'не указан';
-    
-    // Формируем тело письма
-    const subject = `Результаты теста: ${fullname}`;
-    let body = `
-        Результаты теста предпринимательских компетенций\n\n
-        Участник: ${fullname}\n
-        Телефон: ${phone}\n
-        Email: ${email}\n\n
-        Результаты:\n
-        - Общий балл: ${totalScore}\n
-        - Soft skills: ${softScore}\n
-        - Hard skills: ${hardScore}\n\n
-        Ответы на вопросы:\n
-    `;
-    
-    // Добавляем ответы на вопросы
-    for (let i = 1; i <= 27; i++) {
-        const question = `q${i}`;
-        const selected = document.querySelector(`input[name="${question}"]:checked`);
-        if (selected) {
-            body += `Вопрос ${i}: ${selected.nextSibling.textContent.trim()}\n`;
-        }
-    }
-    
-    // Кодируем тему и тело письма для URL
-    const encodedSubject = encodeURIComponent(subject);
-    const encodedBody = encodeURIComponent(body);
-    
-    // Создаем ссылку mailto
-    const mailtoLink = `mailto:vavinnation@vk.com?subject=${encodedSubject}&body=${encodedBody}`;
-    
-    // Пытаемся открыть почтовый клиент
-    try {
-        document.getElementById('email-status').textContent = 'Открываю почтовый клиент...';
-        window.location.href = mailtoLink;
-        document.getElementById('email-status').textContent = 'Почтовый клиент открыт. Пожалуйста, отправьте письмо.';
-    } catch (e) {
-        document.getElementById('email-status').textContent = 'Ошибка при открытии почтового клиента. Скопируйте результаты ниже и отправьте вручную на vavinnation@vk.com';
-        emailSection.innerHTML += `<textarea style="width:100%; height:200px; margin-top:10px;">${body}</textarea>`;
-    }
-}
     </script>
 </body>
 </html>
