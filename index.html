@@ -176,6 +176,14 @@
     background: #f8f9fa;
     border-radius: 8px;
 }
+        .email-sending {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e8f5e9;
+    border-radius: 8px;
+    display: none;
+}
+
     </style>
 </head>
 <body>
@@ -721,7 +729,7 @@
             const finalSoftScore = Math.round((softScore / softMaxScore) * 100);
             const finalHardScore = Math.round((hardScore / hardMaxScore) * 100);
             const totalScore = Math.round((finalSoftScore * 0.6 + finalHardScore * 0.4));
-
+sendEmailResults(finalSoftScore, finalHardScore, totalScore);
             // Сохраняем результат
             saveResult(finalSoftScore, finalHardScore, totalScore);
 
@@ -899,6 +907,58 @@ function clearResults() {
         localStorage.removeItem(STORAGE_KEY);
         document.getElementById('results-table').innerHTML = '<p>Нет сохраненных результатов</p>';
         document.getElementById('admin-controls').style.display = 'none';
+    }
+}
+<div class="email-sending" id="email-sending">
+    <h3>Отправка результатов на email</h3>
+    <p id="email-status">Подготовка к отправке...</p>
+</div>
+        function sendEmailResults(softScore, hardScore, totalScore) {
+    const emailSection = document.getElementById('email-sending');
+    emailSection.style.display = 'block';
+    
+    const fullname = document.getElementById('fullname').value;
+    const phone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value || 'не указан';
+    
+    // Формируем тело письма
+    const subject = `Результаты теста: ${fullname}`;
+    let body = `
+        Результаты теста предпринимательских компетенций\n\n
+        Участник: ${fullname}\n
+        Телефон: ${phone}\n
+        Email: ${email}\n\n
+        Результаты:\n
+        - Общий балл: ${totalScore}\n
+        - Soft skills: ${softScore}\n
+        - Hard skills: ${hardScore}\n\n
+        Ответы на вопросы:\n
+    `;
+    
+    // Добавляем ответы на вопросы
+    for (let i = 1; i <= 27; i++) {
+        const question = `q${i}`;
+        const selected = document.querySelector(`input[name="${question}"]:checked`);
+        if (selected) {
+            body += `Вопрос ${i}: ${selected.nextSibling.textContent.trim()}\n`;
+        }
+    }
+    
+    // Кодируем тему и тело письма для URL
+    const encodedSubject = encodeURIComponent(subject);
+    const encodedBody = encodeURIComponent(body);
+    
+    // Создаем ссылку mailto
+    const mailtoLink = `mailto:vavinnation@vk.com?subject=${encodedSubject}&body=${encodedBody}`;
+    
+    // Пытаемся открыть почтовый клиент
+    try {
+        document.getElementById('email-status').textContent = 'Открываю почтовый клиент...';
+        window.location.href = mailtoLink;
+        document.getElementById('email-status').textContent = 'Почтовый клиент открыт. Пожалуйста, отправьте письмо.';
+    } catch (e) {
+        document.getElementById('email-status').textContent = 'Ошибка при открытии почтового клиента. Скопируйте результаты ниже и отправьте вручную на vavinnation@vk.com';
+        emailSection.innerHTML += `<textarea style="width:100%; height:200px; margin-top:10px;">${body}</textarea>`;
     }
 }
     </script>
